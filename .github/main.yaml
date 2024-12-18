@@ -3,7 +3,7 @@ name: Deploy Docker to Render
 on:
   push:
     branches:
-      - main  # or your desired branch
+      - main  # Trigger deployment on the main branch
 
 jobs:
   deploy:
@@ -27,15 +27,19 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t your-docker-image .
+      
+      # Install Render CLI
+      - name: Install Render CLI
+        run: curl -fsSL https://render.com/install.sh | bash
 
-      - name: Render CLI Installation
-        run: |
-          curl -fsSL https://render.com/install.sh | bash
+      # Check if Render CLI was installed successfully
+      - name: Verify Render CLI Installation
+        run: which render
 
+      # Login to Render
       - name: Login to Render CLI
-        run: |
-          render login --api-key ${{ secrets.RENDER_API_KEY }}
+        run: render login --api-key ${{ secrets.RENDER_API_KEY }}
 
+      # Deploy to Render
       - name: Deploy to Render
-        run: |
-          render deploy --service House-Price-Prediction --branch main
+        run: render deploy --service House-Price-Prediction --branch main
